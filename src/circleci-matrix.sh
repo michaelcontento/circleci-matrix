@@ -29,6 +29,18 @@ ensure_file() {
     fi
 }
 
+sources() {
+    info "Detecting CircleCI environment"
+
+    # Detect and load nvm for NodeJS
+    if [ -f ~/nvm/nvm.sh ]; then
+        source ~/nvm/nvm.sh
+        info "nvm detected and loaded"
+    fi
+
+    info ""
+}
+
 read_file() {
     # 1) Remove leading spaces
     # 2) Remove leading dashes
@@ -103,6 +115,7 @@ main() {
     info ""
 
     ensure_file
+    sources
     process_envs
 
     info "Done"
