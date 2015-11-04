@@ -57,7 +57,7 @@ Now you're ready to execute it with:
 
     INFO: Done
 
-All commands has been executed with the right value in `$VERSION`.
+All commands have been executed with the right value in `$VERSION`.
 
 ## Parallelism
 
