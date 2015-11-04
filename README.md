@@ -5,7 +5,9 @@ Small utility to mirror [TravisCI][]'s [build matrix][] on [CircleCI][].
 
 ## Installation
 
-**TBD**
+    curl -fsSL https://raw.githubusercontent.com/michaelcontento/circleci-matrix/master/src/circleci-matrix.sh \
+        -o /usr/local/bin/circleci-matrix \
+        && chmod +x /usr/local/bin/circleci-matrix
 
 ## Usage
 
