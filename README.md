@@ -79,7 +79,7 @@ All commands have been executed with the right value in `$VERSION`.
 [CircleCI][]'s [parallelism][] is supported out of the box! Have a look at the following
 example where I set the `CIRCLE_NODE_TOTAL` manually:
 
-    $ CIRCLE_NODE_TOTAL=4 circleci-matrix.sh
+    $ CIRCLE_NODE_TOTAL=4 circleci-matrix
     INFO: circleci-matrix version: 0.1.0
     INFO: circleci node total: 4
     INFO: circleci node index: 0
