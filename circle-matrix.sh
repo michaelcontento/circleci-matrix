@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-VERSION="0.1.0"
-CONFIG_FILE=".circleci-matrix.yml"
+CIRCLE_MATRIX_VERSION="0.2.0"
+CONFIG_FILE="circle-matrix.yml"
 
 # Ensure sane defaults
 CIRCLE_NODE_TOTAL=${CIRCLE_NODE_TOTAL:-1}
@@ -30,15 +30,11 @@ ensure_file() {
 }
 
 sources() {
-    info "Detecting CircleCI environment"
-
     # Detect and load nvm for NodeJS
     if [ -f ~/nvm/nvm.sh ]; then
         source ~/nvm/nvm.sh
-        info "nvm detected and loaded"
+        info "Detected CircleCI environment"
     fi
-
-    info ""
 }
 
 read_file() {
@@ -70,7 +66,7 @@ process_commands() {
 
         # Process commands
         if [ "command" == "$mode" ]; then
-            info "Running command: $line"
+            #info "Running command: $line"
             eval $line
             continue
         fi
@@ -95,30 +91,27 @@ process_envs() {
         # Process envs
         if [ "env" == "$mode" ]; then
             if [ $(($i % $CIRCLE_NODE_TOTAL)) -eq $CIRCLE_NODE_INDEX ]; then
-                info "Running env: $line"
+                #info "Running env: $line"
                 export $line
                 process_commands
-            else
-                info "Skipping env: $line"
             fi
             ((i=i+1))
-            info ""
             continue
         fi
     done
 }
 
 main() {
-    info "circleci-matrix version: $VERSION"
-    info "circleci node total: $CIRCLE_NODE_TOTAL"
-    info "circleci node index: $CIRCLE_NODE_INDEX"
-    info ""
+    if [[ "$1" != "" ]]; then CONFIG_FILE=$1; fi
+    info "Circle Matrix Version: $CIRCLE_MATRIX_VERSION"
+    info "Circle Node Total: $CIRCLE_NODE_TOTAL"
+    info "Circle Node Index: $CIRCLE_NODE_INDEX"
 
     ensure_file
     sources
-    process_envs
 
-    info "Done"
+    info ""
+    process_envs
 }
 
-main
+main $@

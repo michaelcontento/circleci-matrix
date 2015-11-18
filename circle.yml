@@ -1,0 +1,4 @@
+test:
+  override:
+    - ./circle-matrix.sh circle-matrix.yml:
+        parallel: true
