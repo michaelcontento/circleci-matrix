@@ -1,3 +1,4 @@
+[![Circle CI](https://circleci.com/gh/winksaville/circleci-matrix.svg?style=shield)](https://circleci.com/gh/winksaville/circleci-matrix)
 [circleci-matrix][]
 ===================
 
