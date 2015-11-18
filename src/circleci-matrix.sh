@@ -109,6 +109,7 @@ process_envs() {
 }
 
 main() {
+    if [[ "$1" != "" ]]; then CONFIG_FILE=$1; fi
     info "circleci-matrix version: $VERSION"
     info "circleci node total: $CIRCLE_NODE_TOTAL"
     info "circleci node index: $CIRCLE_NODE_INDEX"
@@ -121,4 +122,4 @@ main() {
     info "Done"
 }
 
-main
+main $@

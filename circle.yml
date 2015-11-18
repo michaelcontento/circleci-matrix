@@ -1,0 +1,3 @@
+test:
+  override:
+    - src/circleci-matrix.sh example/.circleci-matrix.yml
