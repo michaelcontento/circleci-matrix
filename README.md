@@ -6,100 +6,120 @@ Small utility to mirror [TravisCI][]'s [build matrix][] on [CircleCI][].
 
 ## Installation
 
-Simply download `src/circleci-matrix.sh` and make it executable:
-
-    curl -fsSL https://raw.githubusercontent.com/michaelcontento/circleci-matrix/master/src/circleci-matrix.sh \
-        -o /usr/local/bin/circleci-matrix \
-        && chmod +x /usr/local/bin/circleci-matrix
-
-
-**NOTE**: The `ubuntu` user used by [CircleCI][] machines has no permissions to
-write to `/use/local/bin`! A good alternative is `~/.local/bin`!
-
-As a alternative you could paste this into your `circle.yml`:
-
-    dependencies:
-        pre:
-        # Install circleci-matrix
-        - mkdir -p ~/.local/bin
-        - curl -fsSL https://raw.githubusercontent.com/michaelcontento/circleci-matrix/master/src/circleci-matrix.sh -o ~/.local/bin/circleci-matrix
-        - chmod +x ~/.local/bin/circleci-matrix
+Add circleci-matrix as a submodule to your project or you can just
+cricleci-martrix.sh to your project somewhere convenient.
 
 ## Usage
 
-First you need to define your build matrix in a new file called
-`.circleci-matrix.yml` like this:
+Then add your build matrix in a new file circle-matrix.yml
+or you can pass the name to circle-matrix.sh.
+```
+env:
+    - VERSION=5.0
+    - VERSION=4.2
+    - VERSION=4.1
+    - VERSION=4.0
 
-    env:
-        - VERSION=5.0
-        - VERSION=4.2
-        - VERSION=4.1
-        - VERSION=4.0
+command:
+    - echo 'hi!'
+    - echo "Version is $VERSION"
+```
+Now you're ready to execute it locally we'll execute
+example-matrix.yml:
+```
+    $ ./circleci-matrix.sh circle-matrix.yml
+```
+Or add it to your circle.yml file, for instance:
+```
+test:
+  override:
+    - ./circle-matrix.sh circle-matrix.yml
+```
+In either case the result should be:
 
-    command:
-        - echo 'hi!'
-        - echo "Version is $VERSION"
+```
+INFO: Circle Matrix Version: 0.2.0
+INFO: Circle Node Total: 4
+INFO: Circle Node Index: 0
 
-Now you're ready to execute it with:
+hi!
+Version is 5.0
 
-    $ circleci-matrix
-    INFO: circleci-matrix version: 0.1.0
-    INFO: circleci node total: 1
-    INFO: circleci node index: 0
+hi!
+Version is 4.2
 
-    INFO: Running env: VERSION=5.0
-    INFO: Running command: echo 'hi!'
-    hi!
-    INFO: Running command: echo "Version is $VERSION"
-    Version is 5.0
+hi!
+Version is 4.1
 
-    INFO: Running env: VERSION=4.2
-    INFO: Running command: echo 'hi!'
-    hi!
-    INFO: Running command: echo "Version is $VERSION"
-    Version is 4.2
-
-    INFO: Running env: VERSION=4.1
-    INFO: Running command: echo 'hi!'
-    hi!
-    INFO: Running command: echo "Version is $VERSION"
-    Version is 4.1
-
-    INFO: Running env: VERSION=4.0
-    INFO: Running command: echo 'hi!'
-    hi!
-    INFO: Running command: echo "Version is $VERSION"
-    Version is 4.0
-
-    INFO: Done
-
+hi!
+Version is 4.0
+```
 All commands have been executed with the right value in `$VERSION`.
 
 ## Parallelism
 
 [CircleCI][]'s [parallelism][] is supported out of the box! Have a look at the following
-example where I set the `CIRCLE_NODE_TOTAL` manually:
+example where I set the `CIRCLE_NODE_TOTAL`and CIRCLE_NODE_INDEX manually
+first to 2 and 0 then to 2 and 1:
+```
+$ CIRCLE_NODE_TOTAL=2 CIRCLE_NODE_INDEX=0 ./circle-matrix.sh circle-matrix.yml
+INFO: Circle Matrix Version: 0.2.0
+INFO: Circle Node Total: 2
+INFO: Circle Node Index: 0
 
-    $ CIRCLE_NODE_TOTAL=4 circleci-matrix
-    INFO: circleci-matrix version: 0.1.0
-    INFO: circleci node total: 4
-    INFO: circleci node index: 0
+hi!
+Version is 5.0
+hi!
+Version is 4.1
 
-    INFO: Running env: VERSION=5.0
-    INFO: Running command: echo 'hi!'
-    hi!
-    INFO: Running command: echo "Version is $VERSION"
-    Version is 5.0
+$ CIRCLE_NODE_TOTAL=2 CIRCLE_NODE_INDEX=1 ./circle-matrix.sh circle-matrix.yml
+INFO: Circle Matrix Version: 0.2.0
+INFO: Circle Node Total: 2
+INFO: Circle Node Index: 1
 
-    INFO: Skipping env: VERSION=4.2
+hi!
+Version is 4.2
+hi!
+Version is 4.0
+```
+And here is the output when circleci runs our circle.yml file with 3 containers
 
-    INFO: Skipping env: VERSION=4.1
+Container 0 we see VERSION=5.0 and Version=4.0:
+```
+./circle-matrix.sh circle-matrix.yml
+INFO: Circle Matrix Version: 0.2.0
+INFO: Circle Node Total: 3
+INFO: Circle Node Index: 0
+INFO: Detected CircleCI environment
 
-    INFO: Skipping env: VERSION=4.0
+hi!
+Version is 5.0
+hi!
+Version is 4.0
+```
+Container 1 we see VERSION=4.2:
+```
+./circle-matrix.sh circle-matrix.yml
+INFO: Circle Matrix Version: 0.2.0
+INFO: Circle Node Total: 3
+INFO: Circle Node Index: 1
+INFO: Detected CircleCI environment
 
-    INFO: Done
+hi!
+Version is 4.2
+```
+Container 2 we see VERSION=4.1:
+```
+./circle-matrix.sh circle-matrix.yml
+INFO: Circle Matrix Version: 0.2.0
+INFO: Circle Node Total: 3
+INFO: Circle Node Index: 2
+INFO: Detected CircleCI environment
 
-  [circleci-matrix]: https://github.com/michaelcontento/circleci-matrix
+hi!
+Version is 4.1
+```
+  [circleci-matrix]: https://github.com/winksaville/circleci-matrix
   [CircleCI]: https://circleci.com/
   [TravisCI]: https://travis-ci.org/
   [build matrix]: http://docs.travis-ci.com/user/customizing-the-build/#Build-Matrix
