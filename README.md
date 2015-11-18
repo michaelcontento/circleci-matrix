@@ -6,13 +6,14 @@ Small utility to mirror [TravisCI][]'s [build matrix][] on [CircleCI][].
 
 ## Installation
 
-Add circleci-matrix as a submodule to your project or you can just
-cricleci-martrix.sh to your project somewhere convenient.
+Add `circleci-matrix` as a submodule to your project or you can just
+copy `cricleci-martrix.sh` to your project somewhere convenient.
 
 ## Usage
 
-Then add your build matrix in a new file circle-matrix.yml
-or you can pass the name to circle-matrix.sh.
+Then add your build matrix to a new file `circle-matrix.yml`, which is
+the default name. If you wish to use another name you can pass the
+file name to `circle-matrix.sh` on the command line.
 ```
 env:
     - VERSION=5.0
@@ -24,19 +25,21 @@ command:
     - echo 'hi!'
     - echo "Version is $VERSION"
 ```
-Now you're ready to execute it locally we'll execute
-example-matrix.yml:
+Now you're ready to execute it locally and since its the default name
+we don't need to pass it:
 ```
-    $ ./circleci-matrix.sh circle-matrix.yml
+    $ ./circleci-matrix.sh
 ```
-Or add it to your circle.yml file, for instance:
+Or add it to your circle.yml file, and here we choose to pass the
+name explicitly, although its not necessary:
 ```
 test:
   override:
-    - ./circle-matrix.sh circle-matrix.yml
+    - ./circle-matrix.sh circle-matrix.yml:
+         parallel: true
 ```
-In either case the result should be:
-
+Assuming a single container on `circleci`, the result should
+be as follows both locally and on `circleci`:
 ```
 INFO: Circle Matrix Version: 0.2.0
 INFO: Circle Node Total: 4
@@ -54,15 +57,15 @@ Version is 4.1
 hi!
 Version is 4.0
 ```
-All commands have been executed with the right value in `$VERSION`.
+All commands have been executed with the correct value in `$VERSION`.
 
 ## Parallelism
 
 [CircleCI][]'s [parallelism][] is supported out of the box! Have a look at the following
-example where I set the `CIRCLE_NODE_TOTAL`and CIRCLE_NODE_INDEX manually
-first to 2 and 0 then to 2 and 1:
+example where I set `CIRCLE_NODE_TOTAL`and `CIRCLE_NODE_INDEX` manually
+first to 2 and 0, then to 2 and 1 to simulate two containers:
 ```
-$ CIRCLE_NODE_TOTAL=2 CIRCLE_NODE_INDEX=0 ./circle-matrix.sh circle-matrix.yml
+$ CIRCLE_NODE_TOTAL=2 CIRCLE_NODE_INDEX=0 ./circle-matrix.sh
 INFO: Circle Matrix Version: 0.2.0
 INFO: Circle Node Total: 2
 INFO: Circle Node Index: 0
@@ -72,7 +75,7 @@ Version is 5.0
 hi!
 Version is 4.1
 
-$ CIRCLE_NODE_TOTAL=2 CIRCLE_NODE_INDEX=1 ./circle-matrix.sh circle-matrix.yml
+$ CIRCLE_NODE_TOTAL=2 CIRCLE_NODE_INDEX=1 ./circle-matrix.sh
 INFO: Circle Matrix Version: 0.2.0
 INFO: Circle Node Total: 2
 INFO: Circle Node Index: 1
