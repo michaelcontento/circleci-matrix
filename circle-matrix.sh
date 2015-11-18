@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-VERSION="0.1.0"
-CONFIG_FILE=".circleci-matrix.yml"
+VERSION="0.2.0"
+CONFIG_FILE="circle-matrix.yml"
 
 # Ensure sane defaults
 CIRCLE_NODE_TOTAL=${CIRCLE_NODE_TOTAL:-1}
