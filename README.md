@@ -42,61 +42,119 @@ First you need to define your build matrix in a new file called
 Now you're ready to execute it with:
 
     $ circleci-matrix
-    INFO: circleci-matrix version: 0.1.0
-    INFO: circleci node total: 1
-    INFO: circleci node index: 0
+    circleci-matrix version: 0.1.0
+    circleci node total: 1
+    circleci node index: 0
 
-    INFO: Running env: VERSION=5.0
-    INFO: Running command: echo 'hi!'
+    -----------------------------------------------------------------
+    Env: VERSION=5.0
+    -----------------------------------------------------------------
     hi!
-    INFO: Running command: echo "Version is $VERSION"
     Version is 5.0
 
-    INFO: Running env: VERSION=4.2
-    INFO: Running command: echo 'hi!'
+    -----------------------------------------------------------------
+    Env: VERSION=4.2
+    -----------------------------------------------------------------
     hi!
-    INFO: Running command: echo "Version is $VERSION"
     Version is 4.2
 
-    INFO: Running env: VERSION=4.1
-    INFO: Running command: echo 'hi!'
+    -----------------------------------------------------------------
+    Env: VERSION=4.1
+    -----------------------------------------------------------------
     hi!
-    INFO: Running command: echo "Version is $VERSION"
     Version is 4.1
 
-    INFO: Running env: VERSION=4.0
-    INFO: Running command: echo 'hi!'
+    -----------------------------------------------------------------
+    Env: VERSION=4.0
+    -----------------------------------------------------------------
     hi!
-    INFO: Running command: echo "Version is $VERSION"
     Version is 4.0
-
-    INFO: Done
 
 All commands have been executed with the right value in `$VERSION`.
 
 ## Parallelism
 
-[CircleCI][]'s [parallelism][] is supported out of the box! Have a look at the following
-example where I set the `CIRCLE_NODE_TOTAL` manually:
+[CircleCI][]'s [parallelism][] is supported out of the box! Have a look at the
+following example where I set `CIRCLE_NODE_TOTAL`and `CIRCLE_NODE_INDEX`
+manually first to `2` and `0`, then to `2` and `1` to simulate two containers:
 
-    $ CIRCLE_NODE_TOTAL=4 circleci-matrix
-    INFO: circleci-matrix version: 0.1.0
-    INFO: circleci node total: 4
-    INFO: circleci node index: 0
+    $ CIRCLE_NODE_TOTAL=2 CIRCLE_NODE_INDEX=0 circle-matrix
+    circleci-matrix version: 0.1.0
+    circleci node total: 2
+    circleci node index: 0
 
-    INFO: Running env: VERSION=5.0
-    INFO: Running command: echo 'hi!'
+    -----------------------------------------------------------------
+    Env: VERSION=5.0
+    -----------------------------------------------------------------
     hi!
-    INFO: Running command: echo "Version is $VERSION"
     Version is 5.0
 
-    INFO: Skipping env: VERSION=4.2
+    -----------------------------------------------------------------
+    Env: VERSION=4.1
+    -----------------------------------------------------------------
+    hi!
+    Version is 4.1
 
-    INFO: Skipping env: VERSION=4.1
+    $ CIRCLE_NODE_TOTAL=2 CIRCLE_NODE_INDEX=1 circle-matrix
+    circleci-matrix version: 0.1.0
+    circleci node total: 2
+    circleci node index: 1
 
-    INFO: Skipping env: VERSION=4.0
+    -----------------------------------------------------------------
+    Env: VERSION=4.2
+    -----------------------------------------------------------------
+    hi!
+    Version is 4.2
 
-    INFO: Done
+    -----------------------------------------------------------------
+    Env: VERSION=4.0
+    -----------------------------------------------------------------
+    hi!
+    Version is 4.0
+
+And here is the output when circleci runs our circle.yml file with 3 containers
+
+Container 0 we see `VERSION=5.0` and `Version=4.0`:
+
+    circleci-matrix version: 0.1.0
+    circleci node total: 3
+    circleci node index: 0
+
+    -----------------------------------------------------------------
+    Env: VERSION=5.0
+    -----------------------------------------------------------------
+    hi!
+    Version is 5.0
+
+    -----------------------------------------------------------------
+    Env: VERSION=4.0
+    -----------------------------------------------------------------
+    hi!
+    Version is 4.0
+
+Container 1 we see `VERSION=4.2`:
+
+    circleci-matrix version: 0.1.0
+    circleci node total: 3
+    circleci node index: 1
+
+    -----------------------------------------------------------------
+    Env: VERSION=4.2
+    -----------------------------------------------------------------
+    hi!
+    Version is 4.2
+
+Container 2 we see `VERSION=4.1`:
+
+    circleci-matrix version: 0.1.0
+    circleci node total: 3
+    circleci node index: 2
+
+    -----------------------------------------------------------------
+    Env: VERSION=4.1
+    -----------------------------------------------------------------
+    hi!
+    Version is 4.1
 
   [circleci-matrix]: https://github.com/michaelcontento/circleci-matrix
   [CircleCI]: https://circleci.com/
