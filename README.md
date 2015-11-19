@@ -26,8 +26,9 @@ As a alternative you could paste this into your `circle.yml`:
 
 ## Usage
 
-First you need to define your build matrix in a new file called
-`.circleci-matrix.yml` like this:
+Then add your build matrix to a new file `.circleci-matrix.yml`, which is
+the default name. If you wish to use another name you can pass the it as the
+first argument on the command line (`$ circleci-matrix my-config.yml`).
 
     env:
         - VERSION=5.0
