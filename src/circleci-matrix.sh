@@ -58,7 +58,7 @@ process_commands() {
     local line=""
     local mode=""
     local envfile=$1
-    local tempfile=$(mktemp -t circleci_matrix)
+    local tempfile=$(mktemp -t circleci_matrix.XXX)
 
     read_file | while read line; do
         # Detect mode
@@ -84,7 +84,7 @@ process_envs() {
     local line=""
     local mode=""
     local i=0
-    local tempfile=$(mktemp -t circleci_matrix)
+    local tempfile=$(mktemp -t circleci_matrix.XXX)
 
     read_file | while read line; do
         # Detect mode
