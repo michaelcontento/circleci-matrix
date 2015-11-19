@@ -19,8 +19,12 @@ info() {
     if [ "$message" == "" ]; then
         echo ""
     else
-        echo "INFO: $message"
+        echo "$message"
     fi
+}
+
+print_horizontal_rule () {
+    printf "%$(tput cols)s\n" | tr " " "-"
 }
 
 ensure_file() {
@@ -30,15 +34,11 @@ ensure_file() {
 }
 
 sources() {
-    info "Detecting CircleCI environment"
-
     # Detect and load nvm for NodeJS
     if [ -f ~/nvm/nvm.sh ]; then
         source ~/nvm/nvm.sh
         info "nvm detected and loaded"
     fi
-
-    info ""
 }
 
 read_file() {
@@ -72,7 +72,6 @@ process_commands() {
 
         # Process commands
         if [ "command" == "$mode" ]; then
-            info "Running command: $line"
             cp -f $envfile $tempfile
             echo "$line" >> $tempfile
             (bash $tempfile)
@@ -100,18 +99,19 @@ process_envs() {
         # Process envs
         if [ "env" == "$mode" ]; then
             if [ $(($i % $CIRCLE_NODE_TOTAL)) -eq $CIRCLE_NODE_INDEX ]; then
-                info "Running env: $line"
+                print_horizontal_rule
+                info "Env: $line"
+                print_horizontal_rule
+
                 rm -rf $tempfile
                 echo "CIRCLE_NODE_TOTAL=${CIRCLE_NODE_TOTAL}" >> $tempfile
                 echo "CIRCLE_NODE_INDEX=${CIRCLE_NODE_INDEX}" >> $tempfile
                 echo "$line" >> $tempfile
 
                 process_commands $tempfile
-            else
-                info "Skipping env: $line"
+                info ""
             fi
             ((i=i+1))
-            info ""
             continue
         fi
     done
@@ -121,13 +121,11 @@ main() {
     info "circleci-matrix version: $VERSION"
     info "circleci node total: $CIRCLE_NODE_TOTAL"
     info "circleci node index: $CIRCLE_NODE_INDEX"
-    info ""
-
     ensure_file
     sources
-    process_envs
+    info ""
 
-    info "Done"
+    process_envs
 }
 
 main
