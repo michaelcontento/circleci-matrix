@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-VERSION="0.1.0"
+VERSION="0.2.0"
 CONFIG_FILE=${1:-.circleci-matrix.yml}
 
 # Ensure sane defaults
