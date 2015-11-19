@@ -57,6 +57,8 @@ read_file() {
 process_commands() {
     local line=""
     local mode=""
+    local envfile=$1
+    local tempfile=$(mktemp -t circleci_matrix)
 
     read_file | while read line; do
         # Detect mode
@@ -71,7 +73,9 @@ process_commands() {
         # Process commands
         if [ "command" == "$mode" ]; then
             info "Running command: $line"
-            eval $line
+            cp -f $envfile $tempfile
+            echo "$line" >> $tempfile
+            (bash $tempfile)
             continue
         fi
     done
@@ -81,6 +85,7 @@ process_envs() {
     local line=""
     local mode=""
     local i=0
+    local tempfile=$(mktemp -t circleci_matrix)
 
     read_file | while read line; do
         # Detect mode
@@ -96,8 +101,12 @@ process_envs() {
         if [ "env" == "$mode" ]; then
             if [ $(($i % $CIRCLE_NODE_TOTAL)) -eq $CIRCLE_NODE_INDEX ]; then
                 info "Running env: $line"
-                export $line
-                process_commands
+                rm -rf $tempfile
+                echo "CIRCLE_NODE_TOTAL=${CIRCLE_NODE_TOTAL}" >> $tempfile
+                echo "CIRCLE_NODE_INDEX=${CIRCLE_NODE_INDEX}" >> $tempfile
+                echo "$line" >> $tempfile
+
+                process_commands $tempfile
             else
                 info "Skipping env: $line"
             fi
