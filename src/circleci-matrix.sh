@@ -4,9 +4,9 @@ set -e
 VERSION="0.2.0"
 CONFIG_FILE=${1:-.circleci-matrix.yml}
 
-# Ensure sane defaults
-CIRCLE_NODE_TOTAL=${CIRCLE_NODE_TOTAL:-1}
-CIRCLE_NODE_INDEX=${CIRCLE_NODE_INDEX:-0}
+# Ensure sane defaults and export for subshells
+export CIRCLE_NODE_TOTAL=${CIRCLE_NODE_TOTAL:-1}
+export CIRCLE_NODE_INDEX=${CIRCLE_NODE_INDEX:-0}
 
 error() {
     local message=$1
@@ -57,8 +57,7 @@ read_file() {
 process_commands() {
     local line=""
     local mode=""
-    local envfile=$1
-    local tempfile=$(mktemp -t circleci_matrix.XXX)
+    local envparam=$1
 
     read_file | while read line; do
         # Detect mode
@@ -72,9 +71,7 @@ process_commands() {
 
         # Process commands
         if [ "command" == "$mode" ]; then
-            cp -f $envfile $tempfile
-            echo "$line" >> $tempfile
-            (bash $tempfile)
+            (bash -c "$envparam; $line")
             continue
         fi
     done
@@ -84,7 +81,6 @@ process_envs() {
     local line=""
     local mode=""
     local i=0
-    local tempfile=$(mktemp -t circleci_matrix.XXX)
 
     read_file | while read line; do
         # Detect mode
@@ -103,12 +99,7 @@ process_envs() {
                 info "Env: $line"
                 print_horizontal_rule
 
-                rm -rf $tempfile
-                echo "CIRCLE_NODE_TOTAL=${CIRCLE_NODE_TOTAL}" >> $tempfile
-                echo "CIRCLE_NODE_INDEX=${CIRCLE_NODE_INDEX}" >> $tempfile
-                echo "$line" >> $tempfile
-
-                process_commands $tempfile
+                process_commands $line
                 info ""
             fi
             ((i=i+1))
