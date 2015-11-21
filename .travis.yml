@@ -1,0 +1,10 @@
+sudo: false # use Travis container based infrastructure
+
+before_install:
+    - git clone https://github.com/sstephenson/bats.git /tmp/bats
+    - mkdir -p /tmp/local
+    - bash /tmp/bats/install.sh /tmp/local
+    - export PATH=$PATH:/tmp/local/bin
+
+script:
+    - bats tests/run.bats
