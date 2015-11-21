@@ -1,0 +1,14 @@
+machine:
+    xcode:
+        version: 7.1
+    environment:
+        XCODE_SCHEME: ignoreMe
+        XCODE_WORKSPACE: ignoreMe
+
+dependencies:
+    override:
+        - brew install bats
+
+test:
+    override:
+        - bats tests/run.bats

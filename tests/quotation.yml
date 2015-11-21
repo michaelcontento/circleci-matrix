@@ -1,0 +1,15 @@
+env:
+    - SINGLE='S'
+    - DOUBLE="D"
+    - SINGLE_DOUBLE='"SD"'
+    - DOUBLE_SINGLE="'DS'"
+    - SINGLE_ESCAPED='S'\\''E'
+    - DOUBLE_ESCAPED="D"\\""E"
+
+command:
+    - echo "SINGLE" $SINGLE
+    - echo "DOUBLE" $DOUBLE
+    - echo "SINGLE_DOUBLE" $SINGLE_DOUBLE
+    - echo "DOUBLE_SINGLE" $DOUBLE_SINGLE
+    - echo "SINGLE_ESCAPED" $SINGLE_ESCAPED
+    - echo "DOUBLE_ESCAPED" $DOUBLE_ESCAPED

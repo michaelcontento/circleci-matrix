@@ -1,0 +1,8 @@
+env:
+    - VERSION=1
+    - VERSION=2
+
+command:
+    - echo "A $VERSION"
+    - echo "B $VERSION"
+    # - echo "C $VERSION"

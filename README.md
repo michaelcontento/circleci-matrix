@@ -1,6 +1,9 @@
 [circleci-matrix][]
 ===================
 
+- **Linux:** [![Linux Build](https://travis-ci.org/michaelcontento/circleci-matrix.svg)](https://travis-ci.org/michaelcontento/circleci-matrix)
+- **OSX:** [![OSX Build](https://circleci.com/gh/michaelcontento/circleci-matrix/tree/master.svg?style=shield&circle-token=e8011fe1b683964966f04ecf39c170f65bd3f6dc)](https://circleci.com/gh/michaelcontento/circleci-matrix/tree/master)
+
 Small utility to mirror [TravisCI][]'s [build matrix][] on [CircleCI][].
 
 ## Installation
