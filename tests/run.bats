@@ -58,22 +58,22 @@ circleci-matrix() {
     run circleci-matrix quotation.yml
 
     [ $status -eq 0 ]
-    [ $(echo $output | grep 'SINGLE S') ]
-    [ $(echo $output | grep 'DOUBLE D') ]
-    [ $(echo $output | grep 'SINGLE_DOUBLE "SD"') ]
-    [ $(echo $output | grep "DOUBLE_SINGLE 'DS'") ]
-    [ $(echo $output | grep "SINGLE_ESCAPED S'E") ]
-    [ $(echo $output | grep 'DOUBLE_ESCAPED D"E') ]
+    echo $output | grep 'SINGLE S'
+    echo $output | grep 'DOUBLE D'
+    echo $output | grep 'SINGLE_DOUBLE "SD"'
+    echo $output | grep "DOUBLE_SINGLE 'DS'"
+    echo $output | grep "SINGLE_ESCAPED S'E"
+    echo $output | grep 'DOUBLE_ESCAPED D"E'
 }
 
 @test "command arguments" {
     run circleci-matrix arguments.yml
 
     [ $status -eq 0 ]
-    [ $(echo $output | grep 'first: quoted 1') ]
-    [ $(echo $output | grep 'second: quoted 2') ]
-    [ $(echo $output | grep 'first: unquoted1') ]
-    [ $(echo $output | grep 'second: unquoted2') ]
+    echo $output | grep 'first: quoted 1'
+    echo $output | grep 'second: quoted 2'
+    echo $output | grep 'first: unquoted1'
+    echo $output | grep 'second: unquoted2'
 }
 
 @test "parallelism | 0/3 = process 1, skip 2" {
