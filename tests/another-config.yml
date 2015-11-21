@@ -1,0 +1,5 @@
+env:
+    - VERSION=3
+
+command:
+    - echo "C $VERSION"

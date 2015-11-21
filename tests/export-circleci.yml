@@ -1,0 +1,6 @@
+env:
+    - SOMETHING=1
+
+command:
+    - echo "Node Total: $CIRCLE_NODE_TOTAL"
+    - echo "Node Index: $CIRCLE_NODE_INDEX"

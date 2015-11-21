@@ -1,0 +1,7 @@
+env:
+    - SOMETHING=1
+
+command:
+    - [ "$(type -t process_commands)" != "function" ] || ( echo "process_commands leaked"; exit 1 )
+    - [ -z "$VERSION" ] || ( echo "VERSION leaked"; exit 1 )
+    - [ -z "$CONFIG_FILE" ] || ( echo "CONFIG_FILE leaked"; exit 1 )

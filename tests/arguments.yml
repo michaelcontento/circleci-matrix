@@ -1,0 +1,8 @@
+env:
+    - SOMETHING=1
+
+command:
+    - ./arguments_first.sh "quoted 1" 'quoted 2'
+    - ./arguments_second.sh "quoted 1" 'quoted 2'
+    - ./arguments_first.sh unquoted1 unquoted2
+    - ./arguments_second.sh unquoted1 unquoted2
