@@ -1,14 +1,17 @@
-machine:
-    xcode:
-        version: 7.1
-    environment:
-        XCODE_SCHEME: ignoreMe
-        XCODE_WORKSPACE: ignoreMe
-
 dependencies:
-    override:
-        - brew install bats
+  override:
+    # realpath needed by test.sh
+    - sudo apt-get install realpath
+
+    - | # Install bats from source
+      git clone https://github.com/sstephenson/bats.git
+      cd bats
+      sudo ./install.sh /usr/local
 
 test:
-    override:
-        - bats tests/run.bats
+  override:
+    - bats tests/run.bats:
+        parallel: true
+
+    - ./process-matrix tests-wink/*:
+        parallel: true

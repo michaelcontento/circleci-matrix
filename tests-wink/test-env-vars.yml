@@ -1,0 +1,9 @@
+env:
+    - A=A
+    - B=B
+
+command:
+    - echo A=$A B=$B
+
+    # Test that only A or B is not empty
+    - if [[ "$A" == "" && "$B" == "B" || "$A" == "A" && "$B" == "" ]]; then echo "OK" ; else echo "ERROR: Unexpected values for A=$A or B=$B"; fi

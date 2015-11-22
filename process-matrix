@@ -1,0 +1,17 @@
+THIS_DIR=$(dirname $(realpath $0))
+
+failure="false"
+
+IFS=', ' read -r -a params <<< "$@"
+
+for file in ${params[@]}; do
+  ${THIS_DIR}/src/circleci-matrix-all-commands.sh $file
+  (( "$?" != 0 )) && failure="true"
+done
+
+if [[ "$failure" == "true" ]]; then
+  echo "FAILURE"
+  exit 1
+else
+  echo "SUCCESS"
+fi

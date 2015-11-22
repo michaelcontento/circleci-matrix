@@ -1,0 +1,7 @@
+env:
+    - A=A
+    - B=B
+
+command:
+    # VERSION is not exported from circleci-matrix.sh so it should be empty
+    - if [[ "$VERSION" == "" ]]; then echo "OK"; else echo "ERROR: VERSION is not empty"; exit 1; fi
