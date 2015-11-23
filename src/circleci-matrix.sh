@@ -3,6 +3,8 @@ set -e
 
 VERSION="0.2.0"
 CONFIG_FILE=${1:-.circleci-matrix.yml}
+STOP_ON_ERROR=0
+FAILED_COMMANDS=0
 
 # Ensure sane defaults and export for subshells
 export CIRCLE_NODE_TOTAL=${CIRCLE_NODE_TOTAL:-1}
@@ -31,16 +33,16 @@ print_help() {
     info "Usage: circleci-matrix [OPTIONS]"
     info ""
     info "Options:"
-    info "  --help, -h       Print this screen"
-    info "  --version        Current version of circleci-matrix"
-    info "  --config, -c     Specify the config file to use"
-    info "                   (default: .circleci-matrix.yml)"
+    info "  --help, -h           Print this screen"
+    info "  --version            Current version of circleci-matrix"
+    info "  --config, -c         Specify the config file to use"
+    info "                       (default: .circleci-matrix.yml)"
+    info "  --stop-on-error,-s   Halt after the first failed command"
 }
 
 parse_args() {
-    for i in "$@"
-    do
-    case $i in
+    while : ; do
+    case "$1" in
     -h|--help)
         print_help
         exit 0
@@ -56,14 +58,19 @@ parse_args() {
             error "Missing argument for: $1"
         fi
         CONFIG_FILE=$2
-        shift
+        shift 2
+        ;;
+
+    -s|--stop-on-error)
+        STOP_ON_ERROR=1
         shift
         ;;
 
     *)
         if [ "$1" != "" ]; then
-            error "Unknown option: $1 $@"
+            error "Unknown option: $1"
         fi
+        break
         ;;
     esac
     done
@@ -101,7 +108,7 @@ process_commands() {
     local mode=""
     local envparam=$1
 
-    read_file | while read line; do
+    while read line; do
         # Detect mode
         if [ "env:" == "$line" ]; then
             mode="env"
@@ -113,10 +120,21 @@ process_commands() {
 
         # Process commands
         if [ "command" == "$mode" ]; then
+            set +e
             (bash -c "$envparam; $line")
+            local exitcode=$?
+            set -e
+
+            if [ $exitcode -ne 0 ]; then
+                ((FAILED_COMMANDS=FAILED_COMMANDS+1))
+                if [ $STOP_ON_ERROR -eq 1 ]; then
+                    exit 1
+                fi
+            fi
+
             continue
         fi
-    done
+    done < <(read_file)
 }
 
 process_envs() {
@@ -124,7 +142,7 @@ process_envs() {
     local mode=""
     local i=0
 
-    read_file | while read line; do
+    while read line; do
         # Detect mode
         if [ "env:" == "$line" ]; then
             mode="env"
@@ -147,7 +165,7 @@ process_envs() {
             ((i=i+1))
             continue
         fi
-    done
+    done < <(read_file)
 }
 
 main() {
@@ -161,6 +179,10 @@ main() {
     info ""
 
     process_envs
+
+    if [ $FAILED_COMMANDS -gt 0 ]; then
+        error "$FAILED_COMMANDS command(s) failed"
+    fi
 }
 
 main $@

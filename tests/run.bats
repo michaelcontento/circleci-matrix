@@ -50,7 +50,7 @@ circleci-matrix() {
     circleci-matrix --config another-config.yml | grep "C 3"
 }
 
-@test "load config by name (short options)" {
+@test "load config by name (short option)" {
     circleci-matrix -c another-config.yml | grep "C 3"
 }
 
@@ -90,6 +90,42 @@ circleci-matrix() {
     echo $output | grep 'second: quoted 2'
     echo $output | grep 'first: unquoted1'
     echo $output | grep 'second: unquoted2'
+}
+
+@test "don't fail on first error by default" {
+    run circleci-matrix --config fail_on_second.yml
+
+    [ $status -eq 1 ]
+    echo $output | grep 'first'
+    echo $output | grep 'third'
+}
+
+@test "fail on first" {
+    run circleci-matrix --config fail_on_second.yml --stop-on-error
+
+    [ $status -eq 1 ]
+    [ $(echo $output | grep 'first' | wc -l) -eq 1 ]
+    [ $(echo $output | grep 'third' | wc -l) -eq 0 ]
+}
+
+@test "fail on first (short option)" {
+    run circleci-matrix --config fail_on_second.yml -s
+
+    [ $status -eq 1 ]
+    [ $(echo $output | grep 'first' | wc -l) -eq 1 ]
+    [ $(echo $output | grep 'third' | wc -l) -eq 0 ]
+}
+
+@test "print amount of failed commands" {
+    run circleci-matrix --config three_failures.yml
+    [ $status -eq 1 ]
+    echo $output | grep "ERROR: 3 command(s) failed"
+}
+
+@test "fail on invalid options" {
+    run circleci-matrix --invalid-option
+    [ $status -eq 1 ]
+    echo $output | grep "Unknown option: --invalid-option"
 }
 
 @test "parallelism | 0/3 = process 1, skip 2" {

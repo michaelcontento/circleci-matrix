@@ -1,0 +1,7 @@
+env:
+    - SOMETHING=1
+
+command:
+    - echo "first"
+    - false
+    - echo "third"
