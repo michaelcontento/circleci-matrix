@@ -47,15 +47,31 @@ circleci-matrix() {
 }
 
 @test "load config by name" {
-    circleci-matrix another-config.yml | grep "C 3"
+    circleci-matrix --config another-config.yml | grep "C 3"
+}
+
+@test "load config by name (short options)" {
+    circleci-matrix -c another-config.yml | grep "C 3"
+}
+
+@test "option: --version" {
+    [ "$(circleci-matrix --version)" == "0.2.0" ]
+}
+
+@test "option: --help" {
+    circleci-matrix --help | grep "Usage: circleci-matrix"
+}
+
+@test "option: -h" {
+    circleci-matrix --help | grep "Usage: circleci-matrix"
 }
 
 @test "should not leak private stuff" {
-    circleci-matrix no-private-leak.yml
+    circleci-matrix --config no-private-leak.yml
 }
 
 @test "quotation" {
-    run circleci-matrix quotation.yml
+    run circleci-matrix --config quotation.yml
 
     [ $status -eq 0 ]
     echo $output | grep 'SINGLE S'
@@ -67,7 +83,7 @@ circleci-matrix() {
 }
 
 @test "command arguments" {
-    run circleci-matrix arguments.yml
+    run circleci-matrix --config arguments.yml
 
     [ $status -eq 0 ]
     echo $output | grep 'first: quoted 1'
@@ -113,27 +129,27 @@ circleci-matrix() {
 }
 
 @test "export circleci | node total" {
-    CIRCLE_NODE_TOTAL=5 circleci-matrix export-circleci.yml | grep "Node Total: 5"
+    CIRCLE_NODE_TOTAL=5 circleci-matrix --config export-circleci.yml | grep "Node Total: 5"
 }
 
 @test "export circleci | node index" {
-    CIRCLE_NODE_INDEX=0 circleci-matrix export-circleci.yml | grep "Node Index: 0"
+    CIRCLE_NODE_INDEX=0 circleci-matrix --config export-circleci.yml | grep "Node Index: 0"
 }
 
 @test "export circleci | ensure default node total" {
-    circleci-matrix export-circleci.yml | grep "Node Total: 1"
+    circleci-matrix --config export-circleci.yml | grep "Node Total: 1"
 }
 
 @test "export circleci | ensure default node index" {
-    circleci-matrix export-circleci.yml | grep "Node Index: 0"
+    circleci-matrix --config export-circleci.yml | grep "Node Index: 0"
 }
 
 @test "missing config file | exit code should be 1" {
-    run circleci-matrix invalid-config.yml
+    run circleci-matrix --config invalid-config.yml
     [ "$status" -eq 1 ]
 }
 
 @test "missing config file | print error message" {
-    run circleci-matrix invalid-config.yml
+    run circleci-matrix --config invalid-config.yml
     echo $output | grep "ERROR: No invalid-config.yml file found!"
 }

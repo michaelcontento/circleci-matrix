@@ -30,8 +30,8 @@ As a alternative you could paste this into your `circle.yml`:
 ## Usage
 
 Then add your build matrix to a new file `.circleci-matrix.yml`, which is
-the default name. If you wish to use another name you can pass the it as the
-first argument on the command line (`$ circleci-matrix my-config.yml`).
+the default name. If you wish to use another name you can set it via the
+command line option `--config/-c` (`$ circleci-matrix --config my-config.yml`).
 
     env:
         - VERSION=5.0

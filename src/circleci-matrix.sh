@@ -27,6 +27,48 @@ print_horizontal_rule () {
     printf "%$(tput cols)s\n" | tr " " "-"
 }
 
+print_help() {
+    info "Usage: circleci-matrix [OPTIONS]"
+    info ""
+    info "Options:"
+    info "  --help, -h       Print this screen"
+    info "  --version        Current version of circleci-matrix"
+    info "  --config, -c     Specify the config file to use"
+    info "                   (default: .circleci-matrix.yml)"
+}
+
+parse_args() {
+    for i in "$@"
+    do
+    case $i in
+    -h|--help)
+        print_help
+        exit 0
+        ;;
+
+    --version)
+        info "$VERSION"
+        exit 0
+        ;;
+
+    -c|--config)
+        if [ "$2" == "" ]; then
+            error "Missing argument for: $1"
+        fi
+        CONFIG_FILE=$2
+        shift
+        shift
+        ;;
+
+    *)
+        if [ "$1" != "" ]; then
+            error "Unknown option: $1 $@"
+        fi
+        ;;
+    esac
+    done
+}
+
 ensure_file() {
     if [ ! -f $CONFIG_FILE ]; then
         error "No $CONFIG_FILE file found!"
@@ -109,6 +151,8 @@ process_envs() {
 }
 
 main() {
+    parse_args $@
+
     info "circleci-matrix version: $VERSION"
     info "circleci node total: $CIRCLE_NODE_TOTAL"
     info "circleci node index: $CIRCLE_NODE_INDEX"
@@ -119,4 +163,4 @@ main() {
     process_envs
 }
 
-main
+main $@
