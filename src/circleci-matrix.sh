@@ -2,7 +2,7 @@
 set -e
 
 VERSION="0.2.0"
-CONFIG_FILE=${1:-.circleci-matrix.yml}
+CONFIG_FILE=".circleci-matrix.yml"
 STOP_ON_ERROR=0
 FAILED_COMMANDS=0
 

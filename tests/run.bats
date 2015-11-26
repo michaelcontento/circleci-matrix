@@ -146,6 +146,13 @@ circleci-matrix() {
     fi
 }
 
+@test "don't treat first argument as CONFIG_FILE" {
+    # 1) --stop-on-error is a valid option (--> "invalid argument" error)
+    # 2) --stop-on-error is also the first argument
+    # 3) before --config/-c we used $1 to select the file
+    circleci-matrix --stop-on-error | grep "A 1"
+}
+
 @test "parallelism | 0/3 = process 1, skip 2" {
     export CIRCLE_NODE_TOTAL=3
     export CIRCLE_NODE_INDEX=0
