@@ -138,7 +138,7 @@ circleci-matrix() {
     fi
 
     # Use custom path to avoid global installed nvm
-    PATH="/bin" circleci-matrix --config detect_nvm.yml
+    PATH="/usr/bin:/bin" circleci-matrix --config detect_nvm.yml
 
     # Cleanup if required
     if [ $remove -eq 1 ]; then
