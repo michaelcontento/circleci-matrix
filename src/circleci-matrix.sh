@@ -85,8 +85,7 @@ ensure_file() {
 sources() {
     # Detect and load nvm for NodeJS
     if [ -f ~/nvm/nvm.sh ]; then
-        source ~/nvm/nvm.sh
-        info "nvm detected and loaded"
+        echo "source ~/nvm/nvm.sh;"
     fi
 }
 
@@ -121,7 +120,7 @@ process_commands() {
         # Process commands
         if [ "command" == "$mode" ]; then
             set +e
-            (bash -c "$envparam; $line")
+            (bash -c "$(sources) $envparam; $line")
             local exitcode=$?
             set -e
 
@@ -175,7 +174,6 @@ main() {
     info "circleci node total: $CIRCLE_NODE_TOTAL"
     info "circleci node index: $CIRCLE_NODE_INDEX"
     ensure_file
-    sources
     info ""
 
     process_envs

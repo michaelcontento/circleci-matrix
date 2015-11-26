@@ -128,6 +128,24 @@ circleci-matrix() {
     echo $output | grep "Unknown option: --invalid-option"
 }
 
+@test "source nvm from ~/nvm/nvm.sh" {
+    # Ensure nvm-source where CircleCI will put it
+    local remove=0
+    if [ ! -f ~/nvm/nvm.sh ]; then
+        remove=1
+        mkdir -p ~/nvm
+        echo "nvm() { echo 'circleci-matrix fake nvm'; }" > ~/nvm/nvm.sh
+    fi
+
+    # Use custom path to avoid global installed nvm
+    PATH="/bin" circleci-matrix --config detect_nvm.yml
+
+    # Cleanup if required
+    if [ $remove -eq 1 ]; then
+        rm -rf ~/nvm
+    fi
+}
+
 @test "parallelism | 0/3 = process 1, skip 2" {
     export CIRCLE_NODE_TOTAL=3
     export CIRCLE_NODE_INDEX=0
