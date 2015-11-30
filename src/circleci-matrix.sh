@@ -113,13 +113,21 @@ read_file() {
 
         # Detect group indentation
         if [ $group_indent -eq 0 ]; then
+            # Ignore empty lines
+            if [ "$line" == "" ]; then
+                continue
+            fi
+
+            # Ignore comment lines
             local first_chars=$(echo "$line" | sed -e 's/^ *//' | cut -c1-2)
             if [ "${first_chars:0:1}" == "#" ]; then
                 continue
             fi
 
-            if [ "$first_chars" != "- " ]; then
-                error "Invalid YAML! Elements in $group must start with a '- '! Got: $first_chars"
+            # A new block is about to start
+            if [[ "$first_chars" != "- " && "$line" = *":" ]]; then
+                active_group=0
+                continue
             fi
 
             local line_trimmed=$(echo "$line" | sed -e 's/^ *//')

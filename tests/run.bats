@@ -157,6 +157,10 @@ circleci-matrix() {
     circleci-matrix --config comment_first.yml | grep 'after comment'
 }
 
+@test "support different identations" {
+    circleci-matrix --config different_indentations.yml | grep 'here only 2 - 0'
+}
+
 @test "parallelism | 0/3 = process 1, skip 2" {
     export CIRCLE_NODE_TOTAL=3
     export CIRCLE_NODE_INDEX=0

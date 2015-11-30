@@ -1,0 +1,5 @@
+env:
+- HERE_WITH=0
+
+command:
+  - echo "here only 2 - $HERE_WITH"
