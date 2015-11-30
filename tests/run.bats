@@ -74,58 +74,58 @@ circleci-matrix() {
     run circleci-matrix --config quotation.yml
 
     [ $status -eq 0 ]
-    echo $output | grep 'SINGLE S'
-    echo $output | grep 'DOUBLE D'
-    echo $output | grep 'SINGLE_DOUBLE "SD"'
-    echo $output | grep "DOUBLE_SINGLE 'DS'"
-    echo $output | grep "SINGLE_ESCAPED S'E"
-    echo $output | grep 'DOUBLE_ESCAPED D"E'
+    echo "$output" | grep 'SINGLE S'
+    echo "$output" | grep 'DOUBLE D'
+    echo "$output" | grep 'SINGLE_DOUBLE "SD"'
+    echo "$output" | grep "DOUBLE_SINGLE 'DS'"
+    echo "$output" | grep "SINGLE_ESCAPED S'E"
+    echo "$output" | grep 'DOUBLE_ESCAPED D"E'
 }
 
 @test "command arguments" {
     run circleci-matrix --config arguments.yml
 
     [ $status -eq 0 ]
-    echo $output | grep 'first: quoted 1'
-    echo $output | grep 'second: quoted 2'
-    echo $output | grep 'first: unquoted1'
-    echo $output | grep 'second: unquoted2'
+    echo "$output" | grep 'first: quoted 1'
+    echo "$output" | grep 'second: quoted 2'
+    echo "$output" | grep 'first: unquoted1'
+    echo "$output" | grep 'second: unquoted2'
 }
 
 @test "don't fail on first error by default" {
     run circleci-matrix --config fail_on_second.yml
 
     [ $status -eq 1 ]
-    echo $output | grep 'first'
-    echo $output | grep 'third'
+    echo "$output" | grep 'first'
+    echo "$output" | grep 'third'
 }
 
 @test "fail on first" {
     run circleci-matrix --config fail_on_second.yml --stop-on-error
 
     [ $status -eq 1 ]
-    [ $(echo $output | grep 'first' | wc -l) -eq 1 ]
-    [ $(echo $output | grep 'third' | wc -l) -eq 0 ]
+    [ $(echo "$output" | grep 'first' | wc -l) -eq 1 ]
+    [ $(echo "$output" | grep 'third' | wc -l) -eq 0 ]
 }
 
 @test "fail on first (short option)" {
     run circleci-matrix --config fail_on_second.yml -s
 
     [ $status -eq 1 ]
-    [ $(echo $output | grep 'first' | wc -l) -eq 1 ]
-    [ $(echo $output | grep 'third' | wc -l) -eq 0 ]
+    [ $(echo "$output" | grep 'first' | wc -l) -eq 1 ]
+    [ $(echo "$output" | grep 'third' | wc -l) -eq 0 ]
 }
 
 @test "print amount of failed commands" {
     run circleci-matrix --config three_failures.yml
     [ $status -eq 1 ]
-    echo $output | grep "ERROR: 3 command(s) failed"
+    echo "$output" | grep "ERROR: 3 command(s) failed"
 }
 
 @test "fail on invalid options" {
     run circleci-matrix --invalid-option
     [ $status -eq 1 ]
-    echo $output | grep "Unknown option: --invalid-option"
+    echo "$output" | grep "Unknown option: --invalid-option"
 }
 
 @test "source nvm from ~/nvm/nvm.sh" {
@@ -163,10 +163,10 @@ circleci-matrix() {
     run circleci-matrix
 
     [ $status -eq 0 ]
-    [ $(echo $output | grep 'A 1' | wc -l) -eq 1 ]
-    [ $(echo $output | grep 'B 1' | wc -l) -eq 1 ]
-    [ $(echo $output | grep 'A 2' | wc -l) -eq 0 ]
-    [ $(echo $output | grep 'B 2' | wc -l) -eq 0 ]
+    [ $(echo "$output" | grep 'A 1' | wc -l) -eq 1 ]
+    [ $(echo "$output" | grep 'B 1' | wc -l) -eq 1 ]
+    [ $(echo "$output" | grep 'A 2' | wc -l) -eq 0 ]
+    [ $(echo "$output" | grep 'B 2' | wc -l) -eq 0 ]
 }
 
 @test "parallelism | 1/3 = process 2, skip 1" {
@@ -175,10 +175,10 @@ circleci-matrix() {
     run circleci-matrix
 
     [ $status -eq 0 ]
-    [ $(echo $output | grep 'A 1' | wc -l) -eq 0 ]
-    [ $(echo $output | grep 'B 1' | wc -l) -eq 0 ]
-    [ $(echo $output | grep 'A 2' | wc -l) -eq 1 ]
-    [ $(echo $output | grep 'B 2' | wc -l) -eq 1 ]
+    [ $(echo "$output" | grep 'A 1' | wc -l) -eq 0 ]
+    [ $(echo "$output" | grep 'B 1' | wc -l) -eq 0 ]
+    [ $(echo "$output" | grep 'A 2' | wc -l) -eq 1 ]
+    [ $(echo "$output" | grep 'B 2' | wc -l) -eq 1 ]
 }
 
 @test "parallelism | 3/3 = skip 1, skip 2" {
@@ -187,10 +187,10 @@ circleci-matrix() {
     run circleci-matrix
 
     [ $status -eq 0 ]
-    [ $(echo $output | grep 'A 1' | wc -l) -eq 0 ]
-    [ $(echo $output | grep 'B 1' | wc -l) -eq 0 ]
-    [ $(echo $output | grep 'A 2' | wc -l) -eq 0 ]
-    [ $(echo $output | grep 'B 2' | wc -l) -eq 0 ]
+    [ $(echo "$output" | grep 'A 1' | wc -l) -eq 0 ]
+    [ $(echo "$output" | grep 'B 1' | wc -l) -eq 0 ]
+    [ $(echo "$output" | grep 'A 2' | wc -l) -eq 0 ]
+    [ $(echo "$output" | grep 'B 2' | wc -l) -eq 0 ]
 }
 
 @test "export circleci | node total" {
@@ -216,35 +216,35 @@ circleci-matrix() {
 
 @test "missing config file | print error message" {
     run circleci-matrix --config invalid-config.yml
-    echo $output | grep "ERROR: No invalid-config.yml file found!"
+    echo "$output" | grep "ERROR: No invalid-config.yml file found!"
 }
 
 @test "strings | dash" {
     run circleci-matrix --config strings_dash.yml
     [ "$status" -eq 0 ]
 
-    echo $output | grep "dash-single"
-    echo $output | grep "dash -2 -1"
-    echo $output | grep "dash-empty -2 -1"
-    echo $output | grep "dash-ignore-trailing -2 -1"
+    echo "$output" | grep "dash-single"
+    echo "$output" | grep "dash -2 -1"
+    echo "$output" | grep "dash-empty -2 -1"
+    echo "$output" | grep "dash-ignore-trailing -2 -1"
 }
 
 @test "strings | pipe" {
     run circleci-matrix --config strings_pipe.yml
     [ "$status" -eq 0 ]
 
-    echo $output | grep "pipe |2 |1"
-    echo $output | grep "pipe-empty |2 |1"
-    echo $output | grep "pipe-comment # foo1 |2  # foo2 |1"
-    echo $output | grep "pipe-ignore-trailing |2 |1"
+    echo "$output" | grep "pipe |2 |1"
+    echo "$output" | grep "pipe-empty |2 |1"
+    echo "$output" | grep "pipe-comment # foo1 |2  # foo2 |1"
+    echo "$output" | grep "pipe-ignore-trailing |2 |1"
 }
 
 @test "strings | bracket" {
     run circleci-matrix --config strings_bracket.yml
     [ "$status" -eq 0 ]
 
-    echo $output | grep "bracket >2 >1"
-    echo $output | grep "bracket-empty >2 >1"
-    echo $output | grep "bracket-comment # foo1 >2  # foo2 >1"
-    echo $output | grep "bracket-ignore-trailing >2 >1"
+    echo "$output" | grep "bracket >2 >1"
+    echo "$output" | grep "bracket-empty >2 >1"
+    echo "$output" | grep "bracket-comment # foo1 >2  # foo2 >1"
+    echo "$output" | grep "bracket-ignore-trailing >2 >1"
 }
