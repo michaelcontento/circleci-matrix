@@ -153,6 +153,10 @@ circleci-matrix() {
     circleci-matrix --stop-on-error | grep "A 1"
 }
 
+@test "don't fail if first element is a comment" {
+    circleci-matrix --config comment_first.yml | grep 'after comment'
+}
+
 @test "parallelism | 0/3 = process 1, skip 2" {
     export CIRCLE_NODE_TOTAL=3
     export CIRCLE_NODE_INDEX=0
@@ -213,4 +217,34 @@ circleci-matrix() {
 @test "missing config file | print error message" {
     run circleci-matrix --config invalid-config.yml
     echo $output | grep "ERROR: No invalid-config.yml file found!"
+}
+
+@test "strings | dash" {
+    run circleci-matrix --config strings_dash.yml
+    [ "$status" -eq 0 ]
+
+    echo $output | grep "dash-single"
+    echo $output | grep "dash -2 -1"
+    echo $output | grep "dash-empty -2 -1"
+    echo $output | grep "dash-ignore-trailing -2 -1"
+}
+
+@test "strings | pipe" {
+    run circleci-matrix --config strings_pipe.yml
+    [ "$status" -eq 0 ]
+
+    echo $output | grep "pipe |2 |1"
+    echo $output | grep "pipe-empty |2 |1"
+    echo $output | grep "pipe-comment # foo1 |2  # foo2 |1"
+    echo $output | grep "pipe-ignore-trailing |2 |1"
+}
+
+@test "strings | bracket" {
+    run circleci-matrix --config strings_bracket.yml
+    [ "$status" -eq 0 ]
+
+    echo $output | grep "bracket >2 >1"
+    echo $output | grep "bracket-empty >2 >1"
+    echo $output | grep "bracket-comment # foo1 >2  # foo2 >1"
+    echo $output | grep "bracket-ignore-trailing >2 >1"
 }

@@ -1,0 +1,24 @@
+env:
+    - SOMETHING=1
+
+command:
+    - |
+     echo 'pipe
+     |2
+     |1'
+    - |
+     echo 'pipe-empty
+
+     |2
+
+     |1'
+    - |
+     echo 'pipe-comment
+     # foo1
+     |2
+      # foo2
+     |1'
+    - |
+     echo 'pipe-ignore-trailing
+     |2
+     |1'

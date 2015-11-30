@@ -90,81 +90,115 @@ sources() {
 }
 
 read_file() {
-    # 1) Remove leading spaces
-    # 2) Remove leading dashes
-    # 3) Remove comment lines
-    # 4) Remove empty lines
-    sed \
-        -e 's/^ *//' \
-        -e 's/^- //' \
-        -e '/^#.*/d' \
-        -e '/^$/d' \
-        $CONFIG_FILE
+    local group=$1
+    local active_group=0
+    local group_indent=0
+    local current_line=""
+    local next_spacer=" "
+    local special_mode=" "
+
+    while IFS='' read -r line; do
+        local start=$(trim_right "${line:0:$group_indent}")
+        if [[ $active_group -eq 1 && "$start" != "" ]]; then
+            active_group=0
+        fi
+
+        if [[ $active_group -eq 0 && "$line" == "${group}:" ]]; then
+            active_group=1
+            continue
+        fi
+
+        if [ $active_group -ne 1 ]; then
+            continue
+        fi
+
+        # Detect group indentation
+        if [ $group_indent -eq 0 ]; then
+            local first_chars=$(echo "$line" | sed -e 's/^ *//' | cut -c1-2)
+            if [ "${first_chars:0:1}" == "#" ]; then
+                continue
+            fi
+
+            if [ "$first_chars" != "- " ]; then
+                error "Invalid YAML! Elements in $group must start with a '- '! Got: $first_chars"
+            fi
+
+            local line_trimmed=$(echo "$line" | sed -e 's/^ *//')
+            local len_trimmed=$(expr "$line_trimmed" : '.*')
+            local len_full=$(expr "$line" : '.*')
+            local group_indent=$(($len_full - $len_trimmed))
+        fi
+
+        local line_trimmed=${line:$(($group_indent))}
+
+        # Detect element-end
+        local first_chars=${line_trimmed:0:2}
+        if [[ "$first_chars" == "- " && "$current_line" != "" ]]; then
+            echo "${current_line:2}"
+            current_line=""
+        fi
+
+        # Skip comments
+        if [ "${first_chars:0:1}" == "#" ]; then
+            continue
+        fi
+
+        # Detect special multi-line blocks
+        local line_content=${line_trimmed:1}
+        if [[ "$line_content" == " |" || "$line_content" == " >" ]]; then
+            current_line=" "
+            continue
+        fi
+
+        # Handle lines
+        if [ "$line_content" == "" ]; then
+            current_line="${current_line} "
+            next_spacer=""
+        else
+            current_line="${current_line}${next_spacer}${line_content}"
+            next_spacer=" "
+        fi
+    done < <(cat $CONFIG_FILE)
+
+    current_line="${current_line:2}"
+    current_line=$(echo "$current_line" | sed -e 's/\\n//g')
+    echo "${current_line}"
 }
 
 process_commands() {
     local line=""
-    local mode=""
     local envparam=$1
 
-    while read line; do
-        # Detect mode
-        if [ "env:" == "$line" ]; then
-            mode="env"
-            continue
-        elif [ "command:" == "$line" ]; then
-            mode="command"
-            continue
-        fi
+    while read -r line; do
+        set +e
+        (bash -c "$(sources) $envparam; $line")
+        local exitcode=$?
+        set -e
 
-        # Process commands
-        if [ "command" == "$mode" ]; then
-            set +e
-            (bash -c "$(sources) $envparam; $line")
-            local exitcode=$?
-            set -e
-
-            if [ $exitcode -ne 0 ]; then
-                ((FAILED_COMMANDS=FAILED_COMMANDS+1))
-                if [ $STOP_ON_ERROR -eq 1 ]; then
-                    exit 1
-                fi
+        if [ $exitcode -ne 0 ]; then
+            ((FAILED_COMMANDS=FAILED_COMMANDS+1))
+            if [ $STOP_ON_ERROR -eq 1 ]; then
+                exit 1
             fi
-
-            continue
         fi
-    done < <(read_file)
+    done < <(read_file "command")
 }
 
 process_envs() {
     local line=""
-    local mode=""
     local i=0
 
-    while read line; do
-        # Detect mode
-        if [ "env:" == "$line" ]; then
-            mode="env"
-            continue
-        elif [ "command:" == "$line" ]; then
-            mode="command"
-            continue
-        fi
+    while read -r line; do
+        if [ $(($i % $CIRCLE_NODE_TOTAL)) -eq $CIRCLE_NODE_INDEX ]; then
+            print_horizontal_rule
+            info "Env: $line"
+            print_horizontal_rule
 
-        # Process envs
-        if [ "env" == "$mode" ]; then
-            if [ $(($i % $CIRCLE_NODE_TOTAL)) -eq $CIRCLE_NODE_INDEX ]; then
-                print_horizontal_rule
-                info "Env: $line"
-                print_horizontal_rule
-
-                process_commands $line
-                info ""
-            fi
-            ((i=i+1))
-            continue
+            process_commands $line
+            info ""
         fi
-    done < <(read_file)
+        ((i=i+1))
+    done < <(read_file "env")
 }
 
 main() {
@@ -181,6 +215,12 @@ main() {
     if [ $FAILED_COMMANDS -gt 0 ]; then
         error "$FAILED_COMMANDS command(s) failed"
     fi
+}
+
+trim_right() {
+    local var="$1"
+    var="${var%"${var##*[![:space:]]}"}"
+    echo -n "$var"
 }
 
 main $@

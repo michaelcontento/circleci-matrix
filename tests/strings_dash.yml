@@ -1,0 +1,16 @@
+env:
+    - SOMETHING=1
+
+command:
+    - echo 'dash-single'
+    - echo 'dash
+     -2
+     -1'
+    - echo 'dash-empty
+
+     -2
+
+     -1'
+    - echo 'dash-ignore-trailing
+     -2
+     -1'
