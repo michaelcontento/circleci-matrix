@@ -95,7 +95,6 @@ read_file() {
     local group_indent=0
     local current_line=""
     local next_spacer=" "
-    local special_mode=" "
 
     while IFS='' read -r line; do
         local start=$(trim_right "${line:0:$group_indent}")
