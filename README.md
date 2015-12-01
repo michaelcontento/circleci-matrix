@@ -6,6 +6,15 @@
 
 Small utility to mirror [TravisCI][]'s [build matrix][] on [CircleCI][].
 
+## Features
+
+- Simple one file distribution
+  - Really! `src/circleci-matrix.sh` contains everything you need.
+- No special requirements on OSX or Linux
+- Supports [parallelism][] out of the box
+- Using different config files is as simple as `--config anotherConfig.yml`
+- A rich set of tests ensures that everything will work as expected
+
 ## Installation
 
 Simply download `src/circleci-matrix.sh` and make it executable:
