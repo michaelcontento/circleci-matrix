@@ -22,3 +22,4 @@ command:
      echo 'bracket-ignore-trailing
      >2
      >1'
+    - > echo 'bracket-single'

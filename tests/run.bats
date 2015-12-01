@@ -241,6 +241,7 @@ circleci-matrix() {
     echo "$output" | grep "pipe-empty |2 |1"
     echo "$output" | grep "pipe-comment # foo1 |2  # foo2 |1"
     echo "$output" | grep "pipe-ignore-trailing |2 |1"
+    echo "$output" | grep "pipe-single"
 }
 
 @test "strings | bracket" {
@@ -251,4 +252,5 @@ circleci-matrix() {
     echo "$output" | grep "bracket-empty >2 >1"
     echo "$output" | grep "bracket-comment # foo1 >2  # foo2 >1"
     echo "$output" | grep "bracket-ignore-trailing >2 >1"
+    echo "$output" | grep "bracket-single"
 }

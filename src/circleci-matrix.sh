@@ -152,8 +152,9 @@ read_file() {
 
         # Detect special multi-line blocks
         local line_content=${line_trimmed:1}
-        if [[ "$line_content" == " |" || "$line_content" == " >" ]]; then
-            current_line=" "
+        local first_chars_trimmed=${line_trimmed:0:3}
+        if [[ "$first_chars_trimmed" == "- |" || "$first_chars_trimmed" == "- >" ]]; then
+            current_line="  ${line_trimmed:3}"
             continue
         fi
 
