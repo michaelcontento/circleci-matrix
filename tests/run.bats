@@ -70,6 +70,14 @@ circleci-matrix() {
     circleci-matrix --config no_private_leak.yml
 }
 
+@test "support commands even without a env" {
+    run circleci-matrix --config command_without_env.yml
+
+    [ $status -eq 0 ]
+    echo "$output" | grep 'no env #1'
+    echo "$output" | grep 'no env #2'
+}
+
 @test "quotation" {
     run circleci-matrix --config quotation.yml
 
