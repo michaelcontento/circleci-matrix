@@ -94,7 +94,8 @@ read_file() {
     local active_group=0
     local group_indent=0
     local current_line=""
-    local next_spacer=" "
+    local default_spacer=" "
+    local next_spacer="${default_spacer}"
 
     while IFS='' read -r line; do
         local start=$(trim_right "${line:0:$group_indent}")
@@ -143,6 +144,7 @@ read_file() {
         if [[ "$first_chars" == "- " && "$current_line" != "" ]]; then
             echo "${current_line:2}"
             current_line=""
+            default_spacer=" "
         fi
 
         # Skip comments
@@ -155,31 +157,38 @@ read_file() {
         local first_chars_trimmed=${line_trimmed:0:3}
         if [[ "$first_chars_trimmed" == "- |" || "$first_chars_trimmed" == "- >" ]]; then
             current_line="  ${line_trimmed:3}"
+            default_spacer="\n"
+            next_spacer=""
+            continue
+        fi
+
+        # Handle empty lines for normal (dash) rows
+        if [[ "${line_content}" == "" && "${default_spacer}" == " " ]]; then
+            current_line="${current_line}\n"
+            next_spacer=""
             continue
         fi
 
         # Handle lines
-        if [ "$line_content" == "" ]; then
-            current_line="${current_line} "
-            next_spacer=""
-        else
-            current_line="${current_line}${next_spacer}${line_content}"
-            next_spacer=" "
-        fi
+        current_line="${current_line}${next_spacer}${line_content}"
+        next_spacer="${default_spacer}"
     done < <(cat $CONFIG_FILE)
 
     current_line="${current_line:2}"
-    current_line=$(echo "$current_line" | sed -e 's/\\n//g')
     echo "${current_line}"
 }
 
 process_commands() {
     local line=""
-    local envparam=$1
+    local envfile=$1
+    local tempfile=$(mktemp -t circleci_matrix.XXX)
 
     while read -r line; do
+        cp -f $envfile $tempfile
+        echo -e "$line" >> $tempfile
+
         set +e
-        (bash -c "$(sources) $envparam; $line")
+        (bash $tempfile)
         local exitcode=$?
         set -e
 
@@ -195,6 +204,8 @@ process_commands() {
 process_envs() {
     local line=""
     local i=0
+    local tempfile=$(mktemp -t circleci_matrix.XXX)
+    local sources_prefix="$(sources)"
 
     while read -r line; do
         if [ $(($i % $CIRCLE_NODE_TOTAL)) -eq $CIRCLE_NODE_INDEX ]; then
@@ -202,7 +213,13 @@ process_envs() {
             info "Env: $line"
             print_horizontal_rule
 
-            process_commands $line
+            rm -rf $tempfile
+            echo "#!/usr/bin/env bash" >> $tempfile
+            echo "$sources_prefix" >> $tempfile
+            echo -e "$line" >> $tempfile
+            process_commands $tempfile
+            rm -rf $tempfile
+
             info ""
         fi
         ((i=i+1))

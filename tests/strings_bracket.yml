@@ -23,3 +23,9 @@ command:
      >2
      >1'
     - > echo 'bracket-single'
+    - >
+      if [ 'a' == 'a' ]; then
+        echo 'bracket: if-ok'
+      else
+        echo 'bracket: if-error'
+      fi

@@ -229,28 +229,39 @@ circleci-matrix() {
 
     echo "$output" | grep "dash-single"
     echo "$output" | grep "dash -2 -1"
-    echo "$output" | grep "dash-empty -2 -1"
     echo "$output" | grep "dash-ignore-trailing -2 -1"
+
+    # Replace \n with _ for easy grepping below
+    local nlout=$(echo "$output" | tr '\n' '_')
+    echo "$nlout" | grep "_dash-empty_-2_-1_"
 }
 
 @test "strings | pipe" {
     run circleci-matrix --config strings_pipe.yml
     [ "$status" -eq 0 ]
 
-    echo "$output" | grep "pipe |2 |1"
-    echo "$output" | grep "pipe-empty |2 |1"
-    echo "$output" | grep "pipe-comment # foo1 |2  # foo2 |1"
-    echo "$output" | grep "pipe-ignore-trailing |2 |1"
-    echo "$output" | grep "pipe-single"
+    # Replace \n with _ for easy grepping below
+    local nlout=$(echo "$output" | tr '\n' '_')
+
+    echo "$nlout" | grep "_pipe_|2_|1_"
+    echo "$nlout" | grep "_pipe-empty__|2__|1_"
+    echo "$nlout" | grep "_pipe-comment_# foo1_|2_ # foo2_|1_"
+    echo "$nlout" | grep "_pipe-ignore-trailing_|2_|1_pipe"
+    echo "$nlout" | grep "_pipe-single_"
+    echo "$nlout" | grep "_pipe: if-ok_"
 }
 
 @test "strings | bracket" {
     run circleci-matrix --config strings_bracket.yml
     [ "$status" -eq 0 ]
 
-    echo "$output" | grep "bracket >2 >1"
-    echo "$output" | grep "bracket-empty >2 >1"
-    echo "$output" | grep "bracket-comment # foo1 >2  # foo2 >1"
-    echo "$output" | grep "bracket-ignore-trailing >2 >1"
-    echo "$output" | grep "bracket-single"
+    # Replace \n with _ for easy grepping below
+    local nlout=$(echo "$output" | tr '\n' '_')
+
+    echo "$nlout" | grep "_bracket_>2_>1_"
+    echo "$nlout" | grep "_bracket-empty__>2__>1_"
+    echo "$nlout" | grep "_bracket-comment_# foo1_>2_ # foo2_>1_"
+    echo "$nlout" | grep "_bracket-ignore-trailing_>2_>1_bracket"
+    echo "$nlout" | grep "_bracket-single_"
+    echo "$nlout" | grep "_bracket: if-ok_"
 }

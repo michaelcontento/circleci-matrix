@@ -23,3 +23,9 @@ command:
      |2
      |1'
     - | echo 'pipe-single'
+    - |
+      if [ 'a' == 'a' ]; then
+        echo 'pipe: if-ok'
+      else
+        echo 'pipe: if-error'
+      fi
