@@ -22,7 +22,7 @@ command:
      echo 'bracket-ignore-trailing
      >2
      >1'
-    - > echo 'bracket-single'
+    - > # echo 'bracket-start-comment'
     - >
       if [ 'a' == 'a' ]; then
         echo 'bracket: if-ok'

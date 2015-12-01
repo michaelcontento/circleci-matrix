@@ -22,7 +22,7 @@ command:
      echo 'pipe-ignore-trailing
      |2
      |1'
-    - | echo 'pipe-single'
+    - | # echo 'pipe-start-comment'
     - |
       if [ 'a' == 'a' ]; then
         echo 'pipe: if-ok'
