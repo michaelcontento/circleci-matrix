@@ -47,11 +47,11 @@ circleci-matrix() {
 }
 
 @test "load config by name" {
-    circleci-matrix --config another-config.yml | grep "C 3"
+    circleci-matrix --config another_config.yml | grep "C 3"
 }
 
 @test "load config by name (short option)" {
-    circleci-matrix -c another-config.yml | grep "C 3"
+    circleci-matrix -c another_config.yml | grep "C 3"
 }
 
 @test "option: --version" {
@@ -67,7 +67,7 @@ circleci-matrix() {
 }
 
 @test "should not leak private stuff" {
-    circleci-matrix --config no-private-leak.yml
+    circleci-matrix --config no_private_leak.yml
 }
 
 @test "quotation" {
@@ -214,19 +214,19 @@ circleci-matrix() {
 }
 
 @test "export circleci | node total" {
-    CIRCLE_NODE_TOTAL=5 circleci-matrix --config export-circleci.yml | grep "Node Total: 5"
+    CIRCLE_NODE_TOTAL=5 circleci-matrix --config export_circleci.yml | grep "Node Total: 5"
 }
 
 @test "export circleci | node index" {
-    CIRCLE_NODE_INDEX=0 circleci-matrix --config export-circleci.yml | grep "Node Index: 0"
+    CIRCLE_NODE_INDEX=0 circleci-matrix --config export_circleci.yml | grep "Node Index: 0"
 }
 
 @test "export circleci | ensure default node total" {
-    circleci-matrix --config export-circleci.yml | grep "Node Total: 1"
+    circleci-matrix --config export_circleci.yml | grep "Node Total: 1"
 }
 
 @test "export circleci | ensure default node index" {
-    circleci-matrix --config export-circleci.yml | grep "Node Index: 0"
+    circleci-matrix --config export_circleci.yml | grep "Node Index: 0"
 }
 
 @test "missing config file | exit code should be 1" {
