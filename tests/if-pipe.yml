@@ -1,0 +1,12 @@
+env:
+    - SOMETHING=1
+
+command:
+    # this should be converted to five lines:
+    #   "if [ 'a' -eq 'a' ]; then\n  echo 'a' is 'a'\nelse\n  echo 'a' is not 'a'\nfi\n"
+    - |
+      if [ 'a' -eq 'a' ]; then
+        echo 'a' is 'a'
+      else
+        echo 'a' is not 'a'
+      fi

@@ -1,0 +1,8 @@
+env:
+    - SOMETHING=1
+
+command:
+    # This should be converted to one line "echo 'line 1'; echo 'iine 2'\n"
+    - >
+      echo 'line 1';
+      echo 'line 2'
