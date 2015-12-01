@@ -191,6 +191,7 @@ process_commands() {
         (bash $tempfile)
         local exitcode=$?
         set -e
+        rm -rf $tempfile
 
         if [ $exitcode -ne 0 ]; then
             ((FAILED_COMMANDS=FAILED_COMMANDS+1))

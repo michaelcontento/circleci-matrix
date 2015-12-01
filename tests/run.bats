@@ -128,6 +128,22 @@ circleci-matrix() {
     echo "$output" | grep "Unknown option: --invalid-option"
 }
 
+@test "cleanup /tmp afterwards" {
+    local tempfile=$(mktemp -t circleci_matrix.XXX)
+    local tempdir=$(dirname "${tempfile}")
+
+    # Ensure we're clean before
+    find "$tempdir" -type f -name 'circleci_matrix*' -delete
+    local files=$(find "$tempdir" -type f -name 'circleci_matrix*' | wc -l)
+    [ $files -eq 0 ]
+
+    circleci-matrix
+
+    # And after
+    local files=$(find "$tempdir" -type f -name 'circleci_matrix*' | wc -l)
+    [ $files -eq 0 ]
+}
+
 @test "source nvm from ~/nvm/nvm.sh" {
     # Ensure nvm-source where CircleCI will put it
     local remove=0
