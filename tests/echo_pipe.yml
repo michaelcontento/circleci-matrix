@@ -1,0 +1,9 @@
+env:
+    - SOMETHING=1
+
+command:
+    # this should be converted to three lines "# This is not a yaml comment\necho 'line 1'\necho 'line 2'\n"
+    - | # This is a yaml comment and is ignored
+      # This is not a yaml comment
+      echo 'line 1'
+      echo 'line 2'
