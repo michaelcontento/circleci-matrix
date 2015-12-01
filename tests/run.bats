@@ -239,6 +239,17 @@ circleci-matrix() {
     echo "$output" | grep "ERROR: No invalid-config.yml file found!"
 }
 
+@test "multiline env" {
+    run circleci-matrix --config multiline_env.yml
+    [ "$status" -eq 0 ]
+
+    echo "$output" | grep "A=1 B=1"
+    echo "$output" | grep "A=2 B=2"
+    echo "$output" | grep "A=3 B=3"
+    echo "$output" | grep "A=4 B=4"
+    echo "$output" | grep "A=5 B=5"
+}
+
 @test "strings | dash" {
     run circleci-matrix --config strings_dash.yml
     [ "$status" -eq 0 ]
