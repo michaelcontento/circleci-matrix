@@ -1,0 +1,6 @@
+env:
+    - VERSION="double quoted"
+    - VERSION='single quoted'
+
+command:
+    - echo "$VERSION"

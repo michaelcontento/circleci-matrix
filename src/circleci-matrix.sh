@@ -158,7 +158,7 @@ process_envs() {
                 info "Env: $line"
                 print_horizontal_rule
 
-                process_commands $line
+                process_commands "$line"
                 info ""
             fi
             ((i=i+1))
