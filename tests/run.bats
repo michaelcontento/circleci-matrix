@@ -214,3 +214,11 @@ circleci-matrix() {
     run circleci-matrix --config invalid-config.yml
     echo $output | grep "ERROR: No invalid-config.yml file found!"
 }
+
+@test "should support spaces in single quoted variables" {
+    circleci-matrix --config whitespace_support.yml | grep "^double quoted$"
+}
+
+@test "should support spaces in double quoted variables" {
+    circleci-matrix --config whitespace_support.yml | grep "^single quoted$"
+}
