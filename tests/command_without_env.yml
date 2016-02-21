@@ -1,0 +1,3 @@
+command:
+    - echo 'no env #1'
+    - echo 'no env #2'

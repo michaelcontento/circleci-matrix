@@ -1,0 +1,31 @@
+env:
+    - SOMETHING=1
+
+command:
+    - >
+     echo 'bracket
+     >2
+     >1'
+    - >
+     echo 'bracket-empty
+
+     >2
+
+     >1'
+    - >
+     echo 'bracket-comment
+     # foo1
+     >2
+      # foo2
+     >1'
+    - >
+     echo 'bracket-ignore-trailing
+     >2
+     >1'
+    - > # echo 'bracket-start-comment'
+    - >
+      if [ 'a' == 'a' ]; then
+        echo 'bracket: if-ok'
+      else
+        echo 'bracket: if-error'
+      fi

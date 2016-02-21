@@ -1,0 +1,5 @@
+env:
+    - SOMETHING=1
+command:
+    #- comment
+    - echo 'after comment'

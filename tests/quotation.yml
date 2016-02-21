@@ -3,8 +3,8 @@ env:
     - DOUBLE="D"
     - SINGLE_DOUBLE='"SD"'
     - DOUBLE_SINGLE="'DS'"
-    - SINGLE_ESCAPED='S'\\''E'
-    - DOUBLE_ESCAPED="D"\\""E"
+    - SINGLE_ESCAPED='S'\''E'
+    - DOUBLE_ESCAPED="D"\""E"
 
 command:
     - echo "SINGLE" $SINGLE
