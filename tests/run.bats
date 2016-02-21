@@ -25,7 +25,7 @@ circleci-matrix() {
 }
 
 @test "print version" {
-    circleci-matrix | grep "circleci-matrix version: 0.2.0"
+    circleci-matrix | grep "circleci-matrix version: 1.0.0"
 }
 
 @test "print node total" {
@@ -69,7 +69,7 @@ circleci-matrix() {
 }
 
 @test "option: --version" {
-    [ "$(circleci-matrix --version)" == "0.2.0" ]
+    [ "$(circleci-matrix --version)" == "1.0.0" ]
 }
 
 @test "option: --help" {
