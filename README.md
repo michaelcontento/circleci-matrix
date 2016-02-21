@@ -19,7 +19,7 @@ Small utility to mirror [TravisCI][]'s [build matrix][] on [CircleCI][].
 
 Simply download `src/circleci-matrix.sh` and make it executable:
 
-    curl -fsSL https://raw.githubusercontent.com/michaelcontento/circleci-matrix/master/src/circleci-matrix.sh \
+    curl -fsSL https://git.io/v2Ifs \
         -o /usr/local/bin/circleci-matrix \
         && chmod +x /usr/local/bin/circleci-matrix
 
@@ -33,8 +33,14 @@ As a alternative you could paste this into your `circle.yml`:
         pre:
         # Install circleci-matrix
         - mkdir -p ~/.local/bin
-        - curl -fsSL https://raw.githubusercontent.com/michaelcontento/circleci-matrix/master/src/circleci-matrix.sh -o ~/.local/bin/circleci-matrix
+        - curl -fsSL https://git.io/v2Ifs -o ~/.local/bin/circleci-matrix
         - chmod +x ~/.local/bin/circleci-matrix
+
+Or, if you like to have a cleaner `circle.yml`, use the installer:
+
+    dependencies:
+        pre:
+        - curl -fsSL https://git.io/v2Ifn | bash
 
 ## Usage
 
