@@ -112,16 +112,16 @@ circleci-matrix() {
     run circleci-matrix --config fail_on_second.yml --stop-on-error
 
     [ $status -eq 1 ]
-    [ $(echo "$output" | grep 'first' | wc -l) -eq 1 ]
-    [ $(echo "$output" | grep 'third' | wc -l) -eq 0 ]
+    [ $(echo "$output" | grep '^first' | wc -l) -eq 1 ]
+    [ $(echo "$output" | grep '^third' | wc -l) -eq 0 ]
 }
 
 @test "fail on first (short option)" {
     run circleci-matrix --config fail_on_second.yml -s
 
     [ $status -eq 1 ]
-    [ $(echo "$output" | grep 'first' | wc -l) -eq 1 ]
-    [ $(echo "$output" | grep 'third' | wc -l) -eq 0 ]
+    [ $(echo "$output" | grep '^first' | wc -l) -eq 1 ]
+    [ $(echo "$output" | grep '^third' | wc -l) -eq 0 ]
 }
 
 @test "print amount of failed commands" {
@@ -281,7 +281,7 @@ circleci-matrix() {
     echo "$nlout" | grep "_pipe_|2_|1_"
     echo "$nlout" | grep "_pipe-empty__|2__|1_"
     echo "$nlout" | grep "_pipe-comment_# foo1_|2_ # foo2_|1_"
-    echo "$nlout" | grep "_pipe-ignore-trailing_|2_|1_pipe"
+    echo "$nlout" | grep "_pipe-ignore-trailing_|2_|1_"
     echo "$nlout" | grep "_pipe: if-ok_"
     [ $(echo "$output" | grep 'pipe-start-comment' | wc -l) -eq 0 ]
 }
@@ -296,7 +296,7 @@ circleci-matrix() {
     echo "$nlout" | grep "_bracket_>2_>1_"
     echo "$nlout" | grep "_bracket-empty__>2__>1_"
     echo "$nlout" | grep "_bracket-comment_# foo1_>2_ # foo2_>1_"
-    echo "$nlout" | grep "_bracket-ignore-trailing_>2_>1_bracket"
+    echo "$nlout" | grep "_bracket-ignore-trailing_>2_>1_"
     echo "$nlout" | grep "_bracket: if-ok_"
     [ $(echo "$output" | grep 'bracket-start-comment' | wc -l) -eq 0 ]
 }

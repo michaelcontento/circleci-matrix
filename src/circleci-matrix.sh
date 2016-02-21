@@ -187,6 +187,7 @@ process_commands() {
         cp -f "$envfile" "$tempfile"
         echo -e "$line" >> "$tempfile"
 
+        echo -e "\$ ${line//\\n/\\n> }"
         set +e
         (bash "$tempfile")
         local exitcode=$?
@@ -211,7 +212,7 @@ process_envs() {
     while read -r line; do
         if [ $((i % CIRCLE_NODE_TOTAL)) -eq "$CIRCLE_NODE_INDEX" ]; then
             print_horizontal_rule
-            info "Env: $line"
+            info "-- Env: $line"
             print_horizontal_rule
 
             rm -rf "$tempfile"
@@ -232,9 +233,12 @@ process_envs() {
 main() {
     parse_args "$@"
 
-    info "circleci-matrix version: $VERSION"
-    info "circleci node total: $CIRCLE_NODE_TOTAL"
-    info "circleci node index: $CIRCLE_NODE_INDEX"
+    print_horizontal_rule
+    info "-- circleci-matrix version: $VERSION"
+    info "-- circleci node total: $CIRCLE_NODE_TOTAL"
+    info "-- circleci node index: $CIRCLE_NODE_INDEX"
+    print_horizontal_rule
+
     ensure_file
     info ""
 
