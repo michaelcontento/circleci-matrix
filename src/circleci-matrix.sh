@@ -77,7 +77,7 @@ parse_args() {
 }
 
 ensure_file() {
-    if [ ! -f $CONFIG_FILE ]; then
+    if [ ! -f "$CONFIG_FILE" ]; then
         error "No $CONFIG_FILE file found!"
     fi
 }
@@ -134,10 +134,10 @@ read_file() {
             local line_trimmed=$(echo "$line" | sed -e 's/^ *//')
             local len_trimmed=$(expr "$line_trimmed" : '.*')
             local len_full=$(expr "$line" : '.*')
-            local group_indent=$(($len_full - $len_trimmed))
+            local group_indent=$((len_full - len_trimmed))
         fi
 
-        local line_trimmed=${line:$(($group_indent))}
+        local line_trimmed=${line:$group_indent}
 
         # Detect element-end
         local first_chars=${line_trimmed:0:2}
@@ -172,7 +172,7 @@ read_file() {
         # Handle lines
         current_line="${current_line}${next_spacer}${line_content}"
         next_spacer="${default_spacer}"
-    done < <(cat $CONFIG_FILE)
+    done < <(cat "$CONFIG_FILE")
 
     current_line="${current_line:2}"
     echo "${current_line}"
@@ -184,14 +184,14 @@ process_commands() {
     local tempfile=$(mktemp -t circleci_matrix.XXX)
 
     while read -r line; do
-        cp -f $envfile $tempfile
-        echo -e "$line" >> $tempfile
+        cp -f "$envfile" "$tempfile"
+        echo -e "$line" >> "$tempfile"
 
         set +e
-        (bash $tempfile)
+        (bash "$tempfile")
         local exitcode=$?
         set -e
-        rm -rf $tempfile
+        rm -rf "$tempfile"
 
         if [ $exitcode -ne 0 ]; then
             ((FAILED_COMMANDS=FAILED_COMMANDS+1))
@@ -209,17 +209,19 @@ process_envs() {
     local sources_prefix="$(sources)"
 
     while read -r line; do
-        if [ $(($i % $CIRCLE_NODE_TOTAL)) -eq $CIRCLE_NODE_INDEX ]; then
+        if [ $((i % CIRCLE_NODE_TOTAL)) -eq "$CIRCLE_NODE_INDEX" ]; then
             print_horizontal_rule
             info "Env: $line"
             print_horizontal_rule
 
-            rm -rf $tempfile
-            echo "#!/usr/bin/env bash" >> $tempfile
-            echo "$sources_prefix" >> $tempfile
-            echo -e "$line" >> $tempfile
-            process_commands $tempfile
-            rm -rf $tempfile
+            rm -rf "$tempfile"
+            {
+                echo "#!/usr/bin/env bash";
+                echo "$sources_prefix";
+                echo -e "$line"
+            } >> "$tempfile"
+            process_commands "$tempfile"
+            rm -rf "$tempfile"
 
             info ""
         fi
@@ -228,7 +230,7 @@ process_envs() {
 }
 
 main() {
-    parse_args $@
+    parse_args "$@"
 
     info "circleci-matrix version: $VERSION"
     info "circleci node total: $CIRCLE_NODE_TOTAL"
@@ -249,4 +251,4 @@ trim_right() {
     echo -n "$var"
 }
 
-main $@
+main "$@"
