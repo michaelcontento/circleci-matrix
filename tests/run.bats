@@ -314,3 +314,11 @@ circleci-matrix() {
     echo "$nlout" | grep "_bracket: if-ok_"
     [ $(echo "$output" | grep 'bracket-start-comment' | wc -l) -eq 0 ]
 }
+
+@test "should support spaces in single quoted variables" {
+    circleci-matrix --config whitespace_support.yml | grep "^double quoted$"
+}
+
+@test "should support spaces in double quoted variables" {
+    circleci-matrix --config whitespace_support.yml | grep "^single quoted$"
+}
