@@ -6,6 +6,14 @@
 
 Small utility to mirror [TravisCI][]'s [build matrix][] on [CircleCI][].
 
+# No longer maintained
+
+My focus / time shifted and this tool is no longer maintained.
+
+If you want to step in and become the new owner - just ping me :smile:
+
+Thank you for your patience and using this module in the first place!
+
 ## Features
 
 - Simple one file distribution
