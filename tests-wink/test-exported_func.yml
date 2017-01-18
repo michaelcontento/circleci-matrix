@@ -1,0 +1,9 @@
+env:
+    - A=A
+    - B=B
+
+command:
+    # Using bash try/catch see: http://stackoverflow.com/questions/22009364/is-there-a-try-catch-command-in-bash
+    # test that a function can be exported
+    - { output=$(exported_func $string 2>&1) && echo "OK"; } || { echo "ERROR: exported_func failed output=$output"; }
+

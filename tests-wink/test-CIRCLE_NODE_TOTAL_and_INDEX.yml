@@ -1,0 +1,11 @@
+env:
+    - A=A
+    - B=B
+
+command:
+    # Test that we should have some CIRCLE enviornment variables
+    # Set FAILURE_TEST environment variable to 1 to test that all
+    # commands in all files still run and FAILURE is reported.
+  - if (( "$FAILURE_TEST" != 0 )); then echo "ERROR: CIRCLE_xxx FAILURE_TEST"; exit 1; fi
+  - if (( "$CIRCLE_NODE_TOTAL" >= 1 )); then echo "CIRCLE_NODE_TOTAL OK"; else echo "ERROR: CIRCLE_NODE_TOTAL < 1"; exit 1; fi
+    - if (( "$CIRCLE_NODE_INDEX" >= 0 )); then echo "CIRCLE_NODE_INDEX OK"; else echo "ERROR: CIRCLE_NODE_INDEX < 0"; exit 1; fi
