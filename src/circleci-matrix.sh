@@ -11,6 +11,10 @@ TERMINAL_COLUMNS=$(tput cols || true)
 export CIRCLE_NODE_TOTAL=${CIRCLE_NODE_TOTAL:-1}
 export CIRCLE_NODE_INDEX=${CIRCLE_NODE_INDEX:-0}
 
+if ! rm $(mktemp -t) ; then
+	MKTEMP_T_ARG=circleci_matrix.XXX
+fi
+
 error() {
     local message=$1
     echo >&2 "ERROR: $message"
@@ -182,7 +186,7 @@ read_file() {
 process_commands() {
     local line=""
     local envfile=$1
-    local tempfile=$(mktemp -t circleci_matrix.XXX)
+    local tempfile=$(mktemp -t ${MKTEMP_T_ARG})
 
     while read -r line; do
         cp -f "$envfile" "$tempfile"
@@ -207,7 +211,7 @@ process_commands() {
 process_envs() {
     local line=""
     local i=0
-    local tempfile=$(mktemp -t circleci_matrix.XXX)
+    local tempfile=$(mktemp -t ${MKTEMP_T_ARG})
     local sources_prefix="$(sources)"
 
     while read -r line; do
