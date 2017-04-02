@@ -5,6 +5,7 @@ VERSION="1.0.0"
 CONFIG_FILE=".circleci-matrix.yml"
 STOP_ON_ERROR=0
 FAILED_COMMANDS=0
+TERMINAL_COLUMNS=$(tput cols || true)
 
 # Ensure sane defaults and export for subshells
 export CIRCLE_NODE_TOTAL=${CIRCLE_NODE_TOTAL:-1}
@@ -26,7 +27,7 @@ info() {
 }
 
 print_horizontal_rule () {
-    printf "%$(tput cols)s\n" | tr " " "-"
+    printf "%${TERMINAL_COLUMNS}s\n" | tr " " "-"
 }
 
 print_help() {
