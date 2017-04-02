@@ -12,3 +12,4 @@ dependencies:
 test:
     override:
         - bats tests/run.bats
+        - bats tests/installer.bats
