@@ -220,7 +220,7 @@ process_envs() {
             {
                 echo "#!/usr/bin/env bash";
                 echo "$sources_prefix";
-                echo -e "$line"
+                echo -e "export $line"
             } >> "$tempfile"
             process_commands "$tempfile"
             rm -rf "$tempfile"
