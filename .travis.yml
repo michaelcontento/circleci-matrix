@@ -1,10 +1,23 @@
-sudo: false # use Travis container based infrastructure
+sudo: false
 
-before_install:
-    - git clone https://github.com/sstephenson/bats.git /tmp/bats
-    - mkdir -p /tmp/local
-    - bash /tmp/bats/install.sh /tmp/local
-    - export PATH=$PATH:/tmp/local/bin
+language: c
+
+os:
+    - linux
+    - osx
+
+before_script:
+    -
+      if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+          brew install bats;
+      fi
+    -
+      if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+          git clone https://github.com/sstephenson/bats.git /tmp/bats;
+          mkdir -p /tmp/local && /tmp/bats/install.sh /tmp/local;
+          export PATH=$PATH:/tmp/local/bin;
+      fi
 
 script:
     - bats tests/run.bats
+    - bats tests/installer.bats

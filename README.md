@@ -1,18 +1,10 @@
 [circleci-matrix][]
 ===================
 
-- **Linux:** [![Linux Build](https://travis-ci.org/michaelcontento/circleci-matrix.svg)](https://travis-ci.org/michaelcontento/circleci-matrix)
-- **OSX:** [![OSX Build](https://circleci.com/gh/michaelcontento/circleci-matrix/tree/master.svg?style=shield&circle-token=e8011fe1b683964966f04ecf39c170f65bd3f6dc)](https://circleci.com/gh/michaelcontento/circleci-matrix/tree/master)
+- **TravisCI:** [![Linux Build](https://travis-ci.org/michaelcontento/circleci-matrix.svg)](https://travis-ci.org/michaelcontento/circleci-matrix) (Linux & OSX)
+- **CircleCI:** [![OSX Build](https://circleci.com/gh/michaelcontento/circleci-matrix/tree/master.svg?style=shield&circle-token=e8011fe1b683964966f04ecf39c170f65bd3f6dc)](https://circleci.com/gh/michaelcontento/circleci-matrix/tree/master) (OSX)
 
 Small utility to mirror [TravisCI][]'s [build matrix][] on [CircleCI][].
-
-# No longer maintained
-
-My focus / time shifted and this tool is no longer maintained.
-
-If you want to step in and become the new owner - just ping me :smile:
-
-Thank you for your patience and using this module in the first place!
 
 ## Features
 
