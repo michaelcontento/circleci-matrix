@@ -9,12 +9,13 @@ jobs:
     - run:
         name: Install dependencies
         command: |
-          apk add --no-cache bash ca-certificates ncurses wget
-          wget -O bats-0.4.0.tar.gz https://github.com/sstephenson/bats/archive/v0.4.0.tar.gz
-          tar -xzf bats-0.4.0.tar.gz
-          cd bats-0.4.0
-          ./install.sh /usr/local
+          apk add --no-cache curl bash
+          cd /tmp
+          curl -L https://github.com/sstephenson/bats/archive/v0.4.0.tar.gz | tar -xz
+          ./bats-0.4.0/install.sh /usr/local
     - run:
-        name: Run tests
+        name: Test circleci-matrix
         command: bats tests/run.bats
-
+    - run:
+        name: Test installer
+        command: bats tests/installer.bats
