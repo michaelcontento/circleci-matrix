@@ -1,0 +1,21 @@
+version: 2
+jobs:
+  build:
+    working_directory: /circleci-matrix
+    docker:
+    - image: docker.io/library/alpine:3.5
+    steps:
+    - checkout
+    - run:
+        name: Install dependencies
+        command: |
+          apk add --no-cache curl bash
+          cd /tmp
+          curl -L https://github.com/sstephenson/bats/archive/v0.4.0.tar.gz | tar -xz
+          ./bats-0.4.0/install.sh /usr/local
+    - run:
+        name: Test circleci-matrix
+        command: bats tests/run.bats
+    - run:
+        name: Test installer
+        command: bats tests/installer.bats
